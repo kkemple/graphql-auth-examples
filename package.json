@@ -1,0 +1,29 @@
+{
+  "name": "hapi-graphql-auth-example",
+  "main": "./index.js",
+  "scripts": {
+    "build": "rimraf && babel --source-maps --ignore '**/__tests__/**' src --out-dir build",
+    "build:watch": "babel -w --source-maps --ignore '**/__tests__/**' src --out-dir build",
+    "start": "node ./build/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "graphql": "^0.10.1",
+    "graphql-server-hapi": "^0.8.5",
+    "graphql-tools": "^1.0.0",
+    "hapi": "^16.4.3",
+    "hapi-auth-basic": "^4.2.0",
+    "hapi-auth-jwt2": "^7.2.4",
+    "jsonwebtoken": "^7.4.1",
+    "lodash.omit": "^4.5.0",
+    "sequelize": "^4.1.0",
+    "sqlite": "^2.8.0",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-stage-2": "^6.24.1"
+  }
+}
