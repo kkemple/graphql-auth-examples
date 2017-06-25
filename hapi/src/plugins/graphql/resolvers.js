@@ -1,22 +1,12 @@
-class AuthorizationError extends Error {
-  constructor(message = 'Permission Denied!') {
+import withAuth from './with-auth';
+
+class NotFoundError extends Error {
+  constructor(message = 'Not Found!') {
     super(message);
     this.message = message;
-    this.name = 'AuthorizationError';
+    this.name = 'NotFoundError';
   }
 }
-
-const validateScope = (required, provided) => {
-  let hasScope = false;
-
-  required.map(scope => {
-    if (provided.includes(scope)) hasScope = true;
-  });
-
-  if (!hasScope) {
-    throw new AuthorizationError();
-  }
-};
 
 export default {
   User: {
@@ -44,124 +34,148 @@ export default {
     },
   },
   Query: {
-    async users(_, args, context) {
+    users: withAuth(['user:view:all'], async (_, args, context) => {
       try {
         const { User } = context.models;
-
-        // ensure we have proper scope
-        validateScope(['user:view:all'], context.scope);
 
         return User.findAll();
       } catch (error) {
         return error;
       }
-    },
+    }),
 
-    async user(_, args, context) {
-      try {
-        const { User } = context.models;
-
-        // if not the current user, ensure proper permissions
+    user: withAuth(
+      (_, args, context) => {
         if (context.user.get('id') !== args.id) {
-          validateScope(['user:view'], context.scope);
+          return ['user:view'];
+        } else {
+          return [];
         }
+      },
+      async (_, args, context) => {
+        try {
+          const { User } = context.models;
 
-        return User.findById(args.id);
-      } catch (error) {
-        return error;
-      }
-    },
+          return User.findById(args.id);
+        } catch (error) {
+          return error;
+        }
+      },
+    ),
 
-    async tokens(_, args, context) {
+    tokens: withAuth(['token:view:all'], async (_, args, context) => {
       try {
         const { Token } = context.models;
-
-        // ensure we have proper scope
-        validateScope(['token:view:all'], context.scope);
 
         return Token.findAll();
       } catch (error) {
         return error;
       }
-    },
+    }),
 
-    async token(_, args, context) {
+    token: withAuth(['token:view'], async (_, args, context) => {
       try {
         const { Token } = context.models;
-
-        // ensure we have proper scope
-        validateScope(['token:view'], context.scope);
 
         return Token.findById(args.id);
       } catch (error) {
         return error;
       }
-    },
+    }),
   },
   Mutation: {
-    async createUser(_, args, context) {
+    async logIn(_, args, context) {
+      const { input: { name, password } } = args;
+      const { User, Token } = context.models;
+
+      try {
+        const user = await User.authenticate(name, password);
+        const token = await Token.tokenize(user);
+
+        return { user, token };
+      } catch (error) {
+        return error;
+      }
+    },
+
+    createUser: withAuth(['user:create'], async (_, args, context) => {
       try {
         const { User } = context.models;
-
-        validateScope(['user:create'], context.scope);
-
         const user = await User.create(args.input);
-        return { user };
-      } catch (error) {
-        return error;
-      }
-    },
-    async updateUser(_, args, context) {
-      try {
-        const { User } = context.models;
-
-        // if not the current user, ensure proper permissions
-        if (context.user.get('id') !== args.input.id) {
-          validateScope(['user:update'], context.scope);
-        }
-
-        const user = await User.findById(args.input.id);
-        await user.update(args.input.patch);
 
         return { user };
       } catch (error) {
         return error;
       }
-    },
-    async deleteUser(_, args, context) {
-      try {
-        const { User } = context.models;
+    }),
 
-        // if not the current user, ensure proper permissions
-        if (context.user.get('id') !== args.input.id) {
-          validateScope(['user:delete'], context.scope);
+    updateUser: withAuth(
+      (_, args, context) => {
+        if (context.user.get('id') !== args.id) {
+          return ['user:view'];
+        } else {
+          return [];
         }
+      },
+      async (_, args, context) => {
+        try {
+          const { User } = context.models;
 
-        const user = await User.findById(args.input.id);
-        await user.destroy();
+          const user = await User.findById(args.input.id);
+          await user.update(args.input.patch);
 
-        return { user };
-      } catch (error) {
-        return error;
-      }
-    },
-    async deleteToken(_, args, context) {
-      try {
-        const { User, Token } = context.models;
-
-        const token = await Token.findById(args.input.id, { include: [User] });
-
-        // if not the current user, ensure proper permissions
-        if (context.user.get('id') !== token.user.get('id')) {
-          validateScope(['token:delete'], context.scope);
+          return { user };
+        } catch (error) {
+          return error;
         }
+      },
+    ),
 
-        await token.destroy();
+    deleteUser: withAuth(
+      (_, args, context) => {
+        if (context.user.get('id') !== args.id) {
+          return ['user:delete'];
+        } else {
+          return [];
+        }
+      },
+      async (_, args, context) => {
+        try {
+          const { User } = context.models;
 
-        return { token };
-      } catch (error) {
-        return error;
-      }
-    },
+          const user = await User.findById(args.input.id);
+          await user.destroy();
+
+          return { user };
+        } catch (error) {
+          return error;
+        }
+      },
+    ),
+
+    deleteToken: withAuth(
+      (_, args, context) => {
+        if (context.user.get('id') !== args.id) {
+          return ['token:delete'];
+        } else {
+          return [];
+        }
+      },
+      async (_, args, context) => {
+        try {
+          const { User, Token } = context.models;
+
+          const token = await Token.findById(args.input.id, {
+            include: [User],
+          });
+
+          if (!token) await token.destroy();
+
+          return { token };
+        } catch (error) {
+          return error;
+        }
+      },
+    ),
   },
 };

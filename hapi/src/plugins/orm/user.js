@@ -2,14 +2,6 @@ import omit from 'lodash.omit';
 import bcrypt from 'bcryptjs';
 import { INTEGER, STRING, ENUM } from 'sequelize/lib/data-types';
 
-class AuthenticationError extends Error {
-  constructor(message = 'Authentication failed!') {
-    super(message);
-    this.message = message;
-    this.name = 'AuthenticationError';
-  }
-}
-
 function comparePassword(password, user) {
   if (!user) return Promise.resolve(false);
 
@@ -102,8 +94,7 @@ export default function createUserModel(sequelize, hashMethod) {
 
   User.authenticate = async function(name, password) {
     // if no name or password error out
-    if (!name) throw new AuthenticationError('Name is required!');
-    if (!password) throw new AuthenticationError('Password is required!');
+    if (!name || !password) return null;
 
     // get user by name
     const user = await this.findOne({ where: { name } });
@@ -112,7 +103,7 @@ export default function createUserModel(sequelize, hashMethod) {
     if (user && isValidPassword) {
       return user;
     } else {
-      throw new AuthenticationError('Failed to login!');
+      return null;
     }
   };
 

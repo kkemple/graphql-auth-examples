@@ -12,6 +12,7 @@ export default `
   }
 
   type Mutation {
+    logIn(input: LogIn!): LogInPayload
     createUser(input: CreateUser!): CreateUserPayload
     updateUser(input: UpdateUser!): UpdateUserPayload
     deleteUser(input: DeleteUser!): DeleteUserPayload
@@ -47,6 +48,16 @@ export default `
 
   type DeleteTokenPayload {
     token: Token
+  }
+
+  type LogInPayload {
+    user: User
+    token: String
+  }
+
+  input LogIn {
+    name: String
+    password: String
   }
 
   input CreateUser  {
