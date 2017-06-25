@@ -18,4 +18,5 @@ export default {
     'token:delete:self',
     'token:view:self',
   ],
+  guest: [],
 };

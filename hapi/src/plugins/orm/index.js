@@ -46,18 +46,26 @@ const register = async (server, options, next) => {
     Token.belongsTo(User);
 
     await sequelize.sync();
-    await User.create({
-      name: 'admin',
-      email: 'admin@graphql-hapi-test.blah',
-      password: 'admin',
-      role: 'admin',
-    });
-    await User.create({
-      name: 'user',
-      email: 'user@graphql-hapi-test.blah',
-      password: 'user',
-      role: 'user',
-    });
+    await Promise.all([
+      User.create({
+        name: 'admin',
+        email: 'admin@graphql-hapi-test.blah',
+        password: 'admin',
+        role: 'admin',
+      }),
+      User.create({
+        name: 'user',
+        email: 'user@graphql-hapi-test.blah',
+        password: 'user',
+        role: 'user',
+      }),
+      User.create({
+        name: 'guest',
+        email: 'guest@graphql-hapi-test.blah',
+        password: 'guest',
+        role: 'guest',
+      }),
+    ]);
 
     // make models available to other plugins
     server.expose({ User, Token });
