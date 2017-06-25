@@ -24,8 +24,16 @@ const register = function(server, options, next) {
               // models provided by ORM plugin
               models: server.plugins.orm,
               // user and scope provided by Hapi via Auth plugin
-              user: request.auth.credentials.user,
-              scope: request.auth.credentials.scope,
+              user: request.auth.credentials
+                ? request.auth.credentials.user
+                : null,
+
+              auth: {
+                isAuthenticated: !!request.auth.isAuthenticated,
+                scope: request.auth.credentials
+                  ? request.auth.credentials.scope
+                  : null,
+              },
             },
           }),
         },
@@ -33,7 +41,6 @@ const register = function(server, options, next) {
     ],
     error => {
       if (error) return next(error);
-
       next();
     },
   );

@@ -17,6 +17,11 @@ async function basic(request, email, password, next) {
 
   try {
     const user = await User.authenticate(email, password);
+    if (!user) {
+      next(null, false, { authType: 'basic' });
+      return;
+    }
+
     next(null, true, {
       user,
       scope: scopes[user.get('role')],
@@ -37,8 +42,10 @@ async function jwt(decoded, request, next) {
       include: [User],
     });
 
-    if (!token) throw new AuthenticationError('Invalid Token!');
-    if (token.isExpired()) throw new AuthenticationError('Token expired!');
+    if (!token || token.isExpired()) {
+      next(null, false, { authType: 'jwt' });
+      return;
+    }
 
     next(null, true, {
       user: token.user,
@@ -66,8 +73,9 @@ const register = (server, options, next) => {
     });
 
     // set them as default for all routes
-    // this will check all routes for BOTH forms of authentication before rejecting
-    server.auth.default({ strategies: ['basic', 'jwt'] });
+    // this will check all routes for BOTH forms of authentication
+    // try mode allows request to continue even if user is not valid
+    server.auth.default({ strategies: ['basic', 'jwt'], mode: 'try' });
 
     server.route({
       method: 'POST',
