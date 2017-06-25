@@ -24,7 +24,7 @@ const validateScope = (required, provided) => {
   return hasScope;
 };
 
-export default (scope, callback) => {
+export default function withAuth(scope, callback) {
   const next = callback ? callback : scope;
   let requiredScope = callback ? scope : null;
 
@@ -46,4 +46,4 @@ export default (scope, callback) => {
 
     return next(_, __, context);
   };
-};
+}

@@ -46,11 +46,9 @@ export default {
 
     user: withAuth(
       (_, args, context) => {
-        if (context.user.get('id') !== args.id) {
-          return ['user:view'];
-        } else {
-          return [];
-        }
+        return context.user.get('id') !== args.id
+          ? ['user:view']
+          : ['user:view:self'];
       },
       async (_, args, context) => {
         try {
@@ -111,11 +109,9 @@ export default {
 
     updateUser: withAuth(
       (_, args, context) => {
-        if (context.user.get('id') !== args.id) {
-          return ['user:view'];
-        } else {
-          return [];
-        }
+        return context.user.get('id') !== args.id
+          ? ['user:update']
+          : ['user:update:self'];
       },
       async (_, args, context) => {
         try {
@@ -133,11 +129,9 @@ export default {
 
     deleteUser: withAuth(
       (_, args, context) => {
-        if (context.user.get('id') !== args.id) {
-          return ['user:delete'];
-        } else {
-          return [];
-        }
+        return context.user.get('id') !== args.id
+          ? ['user:delete']
+          : ['user:delete:self'];
       },
       async (_, args, context) => {
         try {
@@ -155,11 +149,9 @@ export default {
 
     deleteToken: withAuth(
       (_, args, context) => {
-        if (context.user.get('id') !== args.id) {
-          return ['token:delete'];
-        } else {
-          return [];
-        }
+        return context.user.get('id') !== args.id
+          ? ['token:delete']
+          : ['token:delete:self'];
       },
       async (_, args, context) => {
         try {
