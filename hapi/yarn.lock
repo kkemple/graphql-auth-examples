@@ -1190,6 +1190,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "1.0.1"
   resolved "https://registry.npmjs.org/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+graphql-auth@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.npmjs.org/graphql-auth/-/graphql-auth-0.0.2.tgz#277e7e5db844e53b56e563b61956c2ad065400e1"
+
 graphql-server-core@^0.8.5:
   version "0.8.5"
   resolved "https://registry.npmjs.org/graphql-server-core/-/graphql-server-core-0.8.5.tgz#6d03e9d7d0ceebdbcfbad57c9f8a61eb0d3fb6da"

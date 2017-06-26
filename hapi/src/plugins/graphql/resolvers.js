@@ -1,4 +1,4 @@
-import withAuth from './with-auth';
+import withAuth from 'graphql-auth';
 
 class NotFoundError extends Error {
   constructor(message = 'Not Found!') {
