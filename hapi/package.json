@@ -9,6 +9,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "graphql": "^0.10.1",
+    "graphql-auth": "^0.0.2",
     "graphql-server-hapi": "^0.8.5",
     "graphql-tools": "^1.0.0",
     "hapi": "^16.4.3",
