@@ -9,6 +9,12 @@ export default {
     'token:delete',
     'token:view',
     'token:view:all',
+    'user:view:self',
+    'user:update:self',
+    'user:delete:self',
+    'token:create:self',
+    'token:delete:self',
+    'token:view:self',
   ],
   user: [
     'user:view:self',

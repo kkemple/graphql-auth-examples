@@ -33,7 +33,7 @@ export default function createTokenModel(sequelize, hashMethod) {
     const v4String = uuid.v4();
 
     // create a new token, then create JWT from new token and return it
-    const tokenModel = this.create({
+    const tokenModel = await this.create({
       userId: user.get('id'),
       uuid: v4String,
     });
