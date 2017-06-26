@@ -1,5 +1,5 @@
 {
-  "name": "hapi-graphql-auth-example",
+  "name": "express-graphql-auth-example",
   "main": "./build/index.js",
   "scripts": {
     "build": "rimraf && babel --source-maps --ignore '**/__tests__/**' src --out-dir build",
@@ -7,17 +7,17 @@
     "start": "node ./build/index.js"
   },
   "dependencies": {
+    "basic-auth": "^1.1.0",
     "bcryptjs": "^2.4.3",
-    "graphql": "^0.10.1",
-    "graphql-auth": "^0.0.2",
-    "graphql-server-hapi": "^0.8.5",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "graphql": "^0.10.3",
+    "graphql-auth": "^0.0.3",
+    "graphql-server-express": "^0.9.0",
     "graphql-tools": "^1.0.0",
-    "hapi": "^16.4.3",
-    "hapi-auth-basic": "^4.2.0",
-    "hapi-auth-jwt2": "^7.2.4",
     "jsonwebtoken": "^7.4.1",
     "lodash.omit": "^4.5.0",
-    "sequelize": "^4.1.0",
+    "sequelize": "^4.2.0",
     "sqlite": "^2.8.0",
     "uuid": "^3.1.0"
   },
